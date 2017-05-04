@@ -1,97 +1,104 @@
 <!doctype html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <title>Vue</title>
-  <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" type="text/css" href="./css/style.css">
-</head>
-<body>
-  <div id="fake-nav">
-    <a class="navbar-brand"><i class="glyphicon glyphicon-calendar"></i> CS52 Events Calendar</a>
-    <a  id="login-text" href="#login" @click="open('login', $event)"> Please Login First</a>
-  </div>
-  <div class="user-modal-container" :class="{ 'active': active }" id="login-modal" @click="close">
-    <div class="user-modal">
-      <div class="form-login" :class="{ 'active': active == 'login' }" id="form-login">
-        <input id="username" type="text" name="user" placeholder="Email or Username" v-model="loginUser" @keyup.enter="submit('login', $event)">
-        <input type="submit" :class="{ 'disabled': submitted == 'login' }" @click="submit('login', $event)" v-model="loginSubmit" id="loginSubmit">
-      </div>
-    </div>
-  </div>
-
-  <!-- main body of our application -->
-  <div class="container" id="events">
-    <div class="col-sm-6">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 id="hello">Sup</h3>
-          <h3>Add an Event</h3>
+    <head>
+        <meta charset="utf-8">
+        <title>Vue</title>
+        <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="./css/style.css">
+    </head>
+    <body>
+        <div id="fake-nav">
+            <a class="navbar-brand">
+                <i class="glyphicon glyphicon-calendar"></i>
+                CS52 Events Calendar</a>
+            <a id="login-text" href="#login" @click="open('login', $event)">
+                Please Login First</a>
+        </div>
+        <div class="user-modal-container" :class="{ 'active': active }" id="login-modal" @click="close">
+            <div class="user-modal">
+                <div class="form-login" :class="{ 'active': active == 'login' }" id="form-login">
+                    <input id="username" type="text" name="user" placeholder="Email or Username" v-model="loginUser" @keyup.enter="submit('login', $event)">
+                    <input type="submit" :class="{ 'disabled': submitted == 'login' }" @click="submit('login', $event)" v-model="loginSubmit" id="loginSubmit">
+                </div>
+            </div>
         </div>
 
-        <!-- HERE IS THE PANEL-BODY CLASS -->
-        <!-- RIGHT HERE YOU'RE WELCOME -->
-        <!-- EDIT ME -->
-        <div class="panel-body">
+        <!-- main body of our application -->
+        <div class="container" id="events">
+            <div class="col-sm-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 id="hello">Sup</h3>
+                        <h3>Add an Event</h3>
+                    </div>
 
-          <div class="form-group">
-            <!-- notice the v-model here...use this as a MODEL for the other input elements...haha -->
-            <input class="form-control" placeholder="Event Name" v-model="event.name">
-          </div>
+                    <!-- HERE IS THE PANEL-BODY CLASS -->
+                    <!-- RIGHT HERE YOU'RE WELCOME -->
+                    <!-- EDIT ME -->
+                    <div class="panel-body" v-on:click="addEvent">
+                        <div class="form-group">
+                            <!-- notice the v-model here...use this as a MODEL for the other input elements...haha -->
+                            <input class="form-control" placeholder="Event Name" v-model="event.name">
+                        </div>
 
-          <div class="form-group">
-            <!-- TODO -->
-            <!-- add v-model here for event description -->
-            <textarea class="form-control" placeholder="Event Description"></textarea>
-          </div>
+                        <div class="form-group">
+                            <!-- TODO -->
+                            <!-- add v-model here for event description -->
+                            <textarea class="form-control" placeholder="Event Description"></textarea>
+                        </div>
 
-          <div class="form-group">
-            <!-- TODO -->
-            <!-- add v-model here for event date -->
-            <input type="date" class="form-control" placeholder="Date">
-          </div>
-          <!-- TODO -->
-          <!-- add v-on:click here -->
-          <button class="btn btn-primary">Submit</button>
+                        <div class="form-group">
+                            <!-- TODO -->
+                            <!-- add v-model here for event date -->
+                            <input type="date" class="form-control" placeholder="Date">
+                        </div>
+                        <!-- TODO -->
+                        <!-- add v-on:click here -->
+                        <button class="btn btn-primary">Submit</button>
 
+                    </div>
+                </div>
+            </div>
+
+            <!-- show the events -->
+            <div class="col-sm-6">
+
+                <!-- HERE IS THE LIST-GROUP CLASS -->
+                <!-- RIGHT HERE YOU'RE WELCOME -->
+                <!-- EDIT ME -->
+                <div class="list-group">
+                    <!-- See the v-for? It's looping through all the events from vue -->
+                    <a href="#" class="list-group-item" v-for="(event, index) in events">
+                        <h4 class="list-group-item-heading">
+                            <i class="glyphicon glyphicon-bullhorn"></i>
+                            {{ event.name }}
+                            by
+                            {{ event.user }}
+                        </h4>
+
+                        <h5>
+                            <i class="glyphicon glyphicon-calendar" v-if="event.date"></i>
+                            <!-- TODO -->
+                            <!-- add {{ event.date }} here -->
+
+                        </h5>
+
+                        <p class="list-group-item-text" v-if="event.description">
+                            <!-- TODO -->
+                            <!-- add {{ event.description }} here -->
+
+                        </p>
+
+                        <button class="btn btn-xs btn-danger" v-on:click="deleteEvent(index)">Delete</button>
+                    </a>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
 
-    <!-- show the events -->
-    <div class="col-sm-6">
-
-      <!-- HERE IS THE LIST-GROUP CLASS -->
-      <!-- RIGHT HERE YOU'RE WELCOME -->
-      <!-- EDIT ME -->
-      <div class="list-group">
-        <!-- See the v-for? It's looping through all the events from vue -->
-        <a href="#" class="list-group-item" v-for="(event, index) in events">
-          <h4 class="list-group-item-heading">
-            <i class="glyphicon glyphicon-bullhorn"></i>
-            {{ event.name }} by {{ event.user }}
-          </h4>
-
-          <h5>
-            <i class="glyphicon glyphicon-calendar" v-if="event.date"></i>
-            <!-- TODO -->
-            <!-- add {{ event.date }} here -->
-
-          </h5>
-
-          <p class="list-group-item-text" v-if="event.description">
-            <!-- TODO -->
-            <!-- add {{ event.description }} here -->
-
-          </p>
-
-          <button class="btn btn-xs btn-danger" v-on:click="deleteEvent(index)">Delete</button>
-        </a>
-      </div>
-    </div>
-  </div>
-
-  <!-- Add scripts here -->
-
-</body>
+        <!-- Add scripts here -->
+        <script src="node_modules/vue/dist/vue.js"></script>
+        <script src="node_modules/vue-resource/dist/vue-resource.js"></script>
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+        <script src="app.js"></script>
+    </body>
 </html>
